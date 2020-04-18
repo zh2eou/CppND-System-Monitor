@@ -26,7 +26,7 @@ std::string System::Debug() {
     return temp_val;
 }
 
-// TODO: Return the system's CPU
+// Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
 // Return a container composed of the system's processes
@@ -34,6 +34,8 @@ vector<Process>& System::Processes() {
     vector<int> pids = LinuxParser::Pids();
 
     for (auto pid : pids) {
+      Process process = Process(pid);
+      process.UpdateCpuUtilization(LinuxParser::ActiveJiffies(pid), LinuxParser::Jiffies());
       processes_.push_back(Process(pid));
     }
     std::sort(processes_.begin(), processes_.end());

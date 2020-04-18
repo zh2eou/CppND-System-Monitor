@@ -14,31 +14,30 @@ using std::vector;
 
 Process::Process(int pid) {
    pid_ = pid;
-   prevTotal_ = LinuxParser::Jiffies();
-   prevActive_ = LinuxParser::ActiveJiffies(pid_);
 }
 
 // Return this process's ID
-int Process::Pid() { 
+int Process::Pid(){ 
     return pid_;
 }
 
-// TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { 
-   long totalJiffies = LinuxParser::Jiffies();
-   long activeJiffies = LinuxParser::ActiveJiffies(pid_);
-   cpu_ = float(activeJiffies - prevActive_) / (totalJiffies - prevTotal_);
-   prevTotal_ = totalJiffies; 
-   prevActive_ = activeJiffies;
+// Return this process's CPU utilization
+float Process::CpuUtilization() const { 
    return cpu_;
+}
+
+// Update this process's CPU utilization
+void Process::UpdateCpuUtilization(long active, long total) {
+   cpu_ = float(active - prevActive_) / (total - prevTotal_);
+   prevTotal_ = total; 
+   prevActive_ = active;
 }
 
 // Return the command that generated this process
 string Process::Command() { return LinuxParser::Command(pid_); }
 
 // Return this process's memory utilization
-string Process::Ram() { return LinuxParser::Ram(pid_); 
-}
+string Process::Ram() { return LinuxParser::Ram(pid_); }
 
 // Return the user (name) that generated this process
 string Process::User() { return LinuxParser::User(pid_); }
@@ -48,5 +47,5 @@ long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const { 
-    return cpu_ < a.cpu_ ? cpu_: a.cpu_;
+    return a.CpuUtilization() < CpuUtilization();
 }
