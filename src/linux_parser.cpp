@@ -306,6 +306,10 @@ long LinuxParser::UpTime(int pid) {string username;
     }
     linestream >> utime_ticks;
   }
-  long utime_seconds = stol(utime_ticks) / sysconf(_SC_CLK_TCK);
-  return utime_seconds;
+  // sometimes process missing data?
+  try {
+    return stol(utime_ticks) / sysconf(_SC_CLK_TCK);
+  } catch (std::invalid_argument& e) {
+    return 0; 
+  }
 }
