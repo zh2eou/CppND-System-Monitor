@@ -16,13 +16,35 @@ using std::vector;
 
 // Used to debug intermediate values
 std::string System::Debug() {
-    std::string temp_val = "cpu ";
+  std::string temp_val = "Mem ";
 
-    vector<std::string> cpu = LinuxParser::CpuUtilization();
-    for (auto state : cpu) { 
-        temp_val += state + " "; 
+  string temp, memTotal, memFree, memAvailable;
+  string line;
+  std::ifstream stream(LinuxParser::kProcDirectory + LinuxParser::kMeminfoFilename);
+  
+    if (stream.is_open()) {
+        //Read total memory
+      while (line.find("Total:") ==  std::string::npos) {
+        std::getline(stream, line);
+      }
+      std::istringstream linestream(line);
+      linestream >> temp >> memTotal;
+      temp_val += "Total: " + memTotal;
+      // Read free memory
+      while (line.find("Free:") ==  std::string::npos) {
+        std::getline(stream, line);
+      }
+      std::istringstream linestream2(line);
+      linestream2 >> temp >> memFree;
+      temp_val += " Free: " + memFree;
+      // Read available memory
+      while (line.find("Available:") ==  std::string::npos) {
+        std::getline(stream, line);
+      }
+      std::istringstream linestream3(line);
+      linestream3 >> temp >> memAvailable;
+      temp_val += " Available: " + memAvailable;
     }
-
     return temp_val;
 }
 

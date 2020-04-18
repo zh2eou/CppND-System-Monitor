@@ -70,7 +70,7 @@ float LinuxParser::MemoryUtilization() {
   string temp, memTotal, memFree, memAvailable;
   string line;
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
-
+  
   if (stream.is_open()) {
     //Read total memory
     while (line.find("Total:") ==  std::string::npos) {
