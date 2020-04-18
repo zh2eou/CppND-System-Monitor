@@ -26,7 +26,7 @@ std::string System::Debug() {
     return temp_val;
 }
 
-// TODO: Return the system's CPU
+// Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
 // Return a container composed of the system's processes
