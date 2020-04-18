@@ -35,12 +35,12 @@ string LinuxParser::OperatingSystem() {
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
   string os, kernel;
-  string line;
+  string line, temp;
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> os >> kernel;
+    linestream >> os >> temp >> kernel;
   }
   return kernel;
 }
@@ -85,16 +85,8 @@ float LinuxParser::MemoryUtilization() {
     }
     std::istringstream linestream2(line);
     linestream2 >> temp >> memFree;
-
-    // Read available memory
-    while (line.find("Available:") ==  std::string::npos) {
-      std::getline(stream, line);
-    }
-    std::istringstream linestream3(line);
-    linestream3 >> temp >> memAvailable;
-
   }
-  float memUtilization = stof(memTotal) - stof(memFree) - stof(memAvailable);
+  float memUtilization = stof(memTotal) - stof(memFree);
  
   return memUtilization / stof(memTotal); 
 }
