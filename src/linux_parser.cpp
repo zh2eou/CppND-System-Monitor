@@ -118,7 +118,7 @@ long LinuxParser::Jiffies() {
 
 // Read and return the number of active jiffies for a PID
 long LinuxParser::ActiveJiffies(int pid) { 
-  string utime, stime, cutime, cstime, starttime;
+  string utime, stime, cutime, cstime;
   string temp, line;
 
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
@@ -138,8 +138,6 @@ long LinuxParser::ActiveJiffies(int pid) {
     for (int i = 0; i < 4; i++) {
       linestream >> temp;
     }
-    // read last value
-    linestream >> starttime;
   }
   long activeJiffies = stol(utime) + stol(stime) + stol(cutime) + stol(cstime);
   return activeJiffies; 
@@ -223,7 +221,7 @@ string LinuxParser::Command(int pid) {
 // Read and return the memory used by a process
 string LinuxParser::Ram(int pid) {
   int ram_mb;
-  string ram = "N/A";
+  string ram = "0";
   string temp;
   string line;
 
@@ -300,7 +298,7 @@ long LinuxParser::UpTime(int pid) {string username;
   }
   // sometimes process missing data?
   try {
-    return stol(utime_ticks) / sysconf(_SC_CLK_TCK);
+    return UpTime() - stol(utime_ticks) / sysconf(_SC_CLK_TCK);
   } catch (std::invalid_argument& e) {
     return 0; 
   }

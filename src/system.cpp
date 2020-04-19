@@ -57,7 +57,7 @@ vector<Process>& System::Processes() {
 
     for (auto pid : pids) {
       Process process = Process(pid);
-      process.UpdateCpuUtilization(LinuxParser::ActiveJiffies(pid), LinuxParser::Jiffies());
+      process.UpdateCpuUtilization(LinuxParser::ActiveJiffies(pid) / sysconf(_SC_CLK_TCK), LinuxParser::UpTime(pid));
       processes_.push_back(Process(pid));
     }
     std::sort(processes_.begin(), processes_.end());
